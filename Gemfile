@@ -8,6 +8,7 @@ group :test, :development do
   gem 'guard'
   gem 'rspec'
   gem 'pry'
+  gem 'equivalent-xml'
   gem 'rb-fsevent'
   gem 'mocha'
   gem 'bourne'

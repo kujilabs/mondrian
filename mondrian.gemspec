@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "mondrian"
   gem.require_paths = ["lib"]
   gem.version       = Mondrian::VERSION
+  
+  gem.add_dependency 'nokogiri', '~> 1.5.0'
 end
