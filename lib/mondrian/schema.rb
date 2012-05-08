@@ -49,7 +49,8 @@ module Mondrian
     public
 
     attributes :name, :description
-    elements :cube
+    #dimension must be first in order for dimension_usage to work
+    elements :dimension, :cube
 
     class Cube < SchemaElement
       attributes :name, :description,
@@ -60,7 +61,7 @@ module Mondrian
         :cache,
         # Whether element is enabled - if true, then the Cube is realized otherwise it is ignored.
         :enabled
-      elements :table, :view, :dimension, :measure, :calculated_member
+      elements :table, :view, :dimension, :dimension_usage, :measure, :calculated_member
     end
 
     class Table < SchemaElement
@@ -81,7 +82,7 @@ module Mondrian
     end
 
     class Dimension < SchemaElement
-      attributes :name, :description,
+      attributes :name, :description, :high_cardinality,
         # The dimension's type may be one of "Standard" or "Time".
         # A time dimension will allow the use of the MDX time functions (WTD, YTD, QTD, etc.).
         # Use a standard dimension if the dimension is not a time-related dimension.
@@ -90,8 +91,24 @@ module Mondrian
         # The name of the column in the fact table which joins to the leaf level of this dimension.
         # Required in a private Dimension or a DimensionUsage, but not in a public Dimension.
         :foreign_key
-      data_dictionary_names :foreign_key # values in XML will be uppercased when using Oracle driver
+      data_dictionary_names :foreign_key, :high_cardinality # values in XML will be uppercased when using Oracle driver
       elements :hierarchy
+    end
+
+    class DimensionUsage < SchemaElement
+      # Name of the source dimension. Must be a dimension in this schema. Case-sensitive.
+      attributes :source,
+        # Name of the level to join to. If not specified, joins to the lowest level of the dimension.
+        :level,
+        # If present, then this is prepended to the Dimension column names during the building of collapse dimension aggregates allowing 
+        # 1) different dimension usages to be disambiguated during aggregate table recognition and 
+        # 2) multiple shared dimensions that have common column names to be disambiguated.
+        :usage_prefix,
+        # The name of the column in the fact table which joins to the leaf level of this dimension.
+        # Required in a private Dimension or a DimensionUsage, but not in a public Dimension.
+        :foreign_key
+
+      data_dictionary_names :foreign_key, :usage_prefix #values in XML will be uppercased when using Oracle driver
     end
 
     class Hierarchy < SchemaElement

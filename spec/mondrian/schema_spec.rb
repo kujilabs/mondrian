@@ -7,6 +7,28 @@ describe Mondrian::Schema do
       @schema = Mondrian::Schema.new
     end
 
+
+    describe "dimension cube order" do
+      it "should render dimensions before cubes" do
+        @schema.define do
+          cube 'Sales' do
+            dimension_usage :usage_prefix => "Test", :source => 'Gender'
+          end
+          dimension "Gender"
+        end
+        @schema.to_xml.should be_equivalent_to <<-XML
+         <?xml version="1.0"?>
+         <Schema name="default">
+           <Dimension name="Gender"/>
+           <Cube name="Sales">
+             <DimensionUsage usagePrefix="Test" source="Gender"/>
+           </Cube>
+         </Schema>
+        XML
+      end
+
+    end
+
     describe "root element" do
       it "should render to XML" do
         @schema.to_xml.should be_equivalent_to <<-XML
@@ -361,6 +383,24 @@ describe Mondrian::Schema do
         XML
       end
 
+    end
+
+    describe "DimensionUsage" do
+      it "should render to XML" do
+        @schema.define do
+          cube 'Sales' do
+            dimension_usage :usage_prefix => "Test", :source => 'Gender'
+          end
+        end
+        @schema.to_xml.should be_equivalent_to <<-XML
+        <?xml version="1.0"?>
+        <Schema name="default">
+          <Cube name="Sales">
+            <DimensionUsage source="Gender" usagePrefix="Test">
+          </Cube>
+        </Schema>
+        XML
+      end
     end
 
     describe "Measure" do
