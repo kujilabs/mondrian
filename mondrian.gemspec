@@ -4,9 +4,9 @@ require File.expand_path('../lib/mondrian/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["stellard"]
   gem.email         = ["scott.ellard@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Schema DSL for mondrian}
+  gem.summary       = %q{Ruby DSL for Mondrian Schema Definitions, Based on https://github.com/rsim/mondrian-olap}
+  gem.homepage      = "https://github.com/kujilabs/mondrian"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
