@@ -56,7 +56,7 @@ Here is example how to define OLAP schema and its mapping to relational database
     require "rubygems"
     require "mondrian"
 
-    schema = Mondrian::OLAP::Schema.define do
+    schema = Mondrian::Schema.define do
       cube 'Sales' do
         table 'sales'
         dimension 'Customers', :foreign_key => 'customer_id' do
