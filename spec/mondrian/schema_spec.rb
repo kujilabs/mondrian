@@ -403,6 +403,48 @@ describe Mondrian::Schema do
       end
     end
 
+
+
+    describe "Closure" do
+      it "should render to XML" do
+        @schema.define do
+          cube 'Sales' do
+            dimension 'Employees', :foreign_key => 'employee_id' do
+              hierarchy :has_all => true, :all_member_name => 'All Employees', :primary_key => 'employee_id' do
+                table "employee"
+                level 'Employee Id', :column => 'employee_id', :unique_members => true, :parent_column => 'supervisor_id', :null_parent_value => '0' do
+                  closure  :child_column =>"employee_id", :parent_column => "supervisor_id" do
+                    table "employee_closure"
+                  end
+                  property "Position Title", :column => "position_title"
+                end
+              end
+            end
+          end
+        end
+        @schema.to_xml.should be_equivalent_to <<-XML
+        <?xml version="1.0"?>
+        <Schema name="default">
+          <Cube name="Sales">
+            <Dimension name="Employees" foreignKey="employee_id">
+              <Hierarchy hasAll="true" allMemberName="All Employees" primaryKey="employee_id">
+                <Table name="employee"/>
+                <Level name="Employee Id" uniqueMembers="true" column="employee_id" parentColumn="supervisor_id" nullParentValue="0">
+                  <Closure parentColumn="supervisor_id" childColumn="employee_id">
+                    <Table name="employee_closure"/>
+                  </Closure>
+                  <Property name="Position Title" column="position_title"/>
+                 </Level>
+              </Hierarchy>
+            </Dimension>
+          </Cube>
+        </Schema>
+        XML
+      end
+    end
+
+
+
     describe "Measure" do
       it "should render XML" do
         @schema.define do

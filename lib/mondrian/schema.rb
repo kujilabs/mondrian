@@ -134,6 +134,13 @@ module Mondrian
       elements :table, :join, :property, :level
     end
 
+    class Closure < SchemaElement
+      attributes :parent_column, :child_colum
+      data_dictionary_names :parent_column, :child_colum # values in XML will be uppercased when using Oracle driver
+      elements :table
+    end
+
+
     class Join < SchemaElement
       attributes :left_key, :right_key, :left_alias, :right_alias
       data_dictionary_names :left_key, :right_key, :left_alias, :right_alias # values in XML will be uppercased when using Oracle driver
@@ -186,7 +193,7 @@ module Mondrian
         # Default value: 'Never'
         :hide_member_if
       data_dictionary_names :table, :column, :name_column, :ordinal_column, :parent_column # values in XML will be uppercased when using Oracle driver
-      elements :key_expression, :name_expression, :ordinal_expression, :member_formatter, :property
+      elements :key_expression, :name_expression, :ordinal_expression, :member_formatter, :property, :closure
     end
 
     class KeyExpression < SchemaElement
